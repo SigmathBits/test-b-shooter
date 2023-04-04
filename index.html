@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Shooter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Shoot as many enemies as you can!">
+        
+        <link rel="stylesheet" href="css/main.css"></link>
+
+        <script type="module" src="js/main.js"></script>
+    </head>
+    <body>
+        <div id="debug" class="box debug-box">
+            <span>Avg FPS:</span><div id="average-fps">0</div>
+            <span>Draws:</span><div id="draw-count">0</div>
+        </div>
+        <div class="game-over-container">
+            <div id="game-over" class="box game-over-box hidden">
+                <header>Game Over!</header>
+                <section class="stats-box">
+                    <span>Shots fired:</span><div id="shot-count">0</div>
+                    <span>Hits:</span><div id="hit-count">0 (0%)</div>
+                    <span>Misses:</span><div id="miss-count">0 (0%)</div>
+                    <span>Accuracy:</span><div id="accuracy">0%</div>
+                </section>
+                <button onclick="location.reload()" class="restart-button">Restart</button>
+            </div>
+        </div>
+        <div id="timer" class="box timer-box">1:00</div>
+        <canvas id="play-area" class="play-area">
+    </body>
+</html>

@@ -1,0 +1,85 @@
+html, body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+
+.box {
+    position: absolute;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    user-select: none;
+
+    margin: 20px;
+    padding: 0.25em 0.5em;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+
+    border-radius: 2px;
+}
+
+.debug-box {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.5em;
+}
+
+.timer-box {
+    font-size: 2.33rem;
+    bottom: 30px;
+    left: 50%;
+    translate: -50%;
+}
+
+.game-over-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-over-box {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 1em;
+    border-radius: 5px;
+}
+
+.game-over-box header {
+    text-align: center;
+    font-size: 4rem;
+    border-bottom: 1px solid white;
+}
+
+.stats-box {
+    font-size: 2rem;
+    padding-block: 0.33em;
+    display: grid;
+    gap: 0.1em 1em;
+    grid-template-columns: auto auto;
+}
+
+.restart-button {
+    display: block;
+    margin: auto;
+    padding: 0.33em 0.5em;
+
+    font-size: 1.33rem;
+    font-weight: bold;
+
+    background-color: rgba(128, 128, 128, 0.5);
+    color: white;
+    border: none;
+    border-radius: 2px;
+}
+
+.restart-button:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.hidden {
+    display: none;
+}
