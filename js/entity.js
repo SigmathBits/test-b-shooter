@@ -14,7 +14,6 @@ export class Entity {
      * @param {Number} size.x
      * @param {Number} size.y
      * @param {String} tag
-     * @param {String} colour
      * @param {World} world
      */
     constructor({ x, y } = {}, { width, height }, tag='entity', world=null) {
@@ -36,8 +35,8 @@ export class Entity {
     }
 
     /**
-     * 
-     * @returns {Object}
+     * Returns the rect bounding box of the Entity
+     * @returns {Object} The x, y, width, and height of the Entity in one object
      */
     rect() {
         return { ...this.position, ...this.size };
@@ -109,7 +108,7 @@ export class Entity {
 
     /**
      * Called every frame
-     * @param {Number} timeDeltaMS - The time elapsed since the last frame in milliseconds
+     * @param {Number} timeDeltaMS The time elapsed since the last frame in milliseconds
      */
     update(timeDeltaMS) {
 
@@ -117,7 +116,7 @@ export class Entity {
 
     /**
      * 
-     * @param {CanvasRenderingContext2D} context ds
+     * @param {CanvasRenderingContext2D} context 
      */
     render(context) {
         context.strokeStyle = "#FF00FF";

@@ -8,6 +8,13 @@ import { Entity } from "./entity.js";
 
 
 export class Explosion extends Entity {
+    /**
+     * 
+     * @param {Object} centre 
+     * @param {Number} centre.x 
+     * @param {Number} centre.y
+     * @param {Boolean} muted 
+     */
     constructor({ x, y }, muted=false) {
         const position = { x: x - EXPLOSION_SIZE/2, y: y - EXPLOSION_SIZE/2 };
         super(position, { width: EXPLOSION_SIZE, height: EXPLOSION_SIZE }, 'explosion');

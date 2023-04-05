@@ -70,7 +70,6 @@ export class Target extends Entity {
      * @param {CanvasRenderingContext2D} context 
      */
     render(context) {
-        // FIXME: Find a better workaround for this
         if (!this.sprite) return;
 
         context.drawImage(

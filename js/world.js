@@ -19,12 +19,12 @@ export class World {
         this.viewport = { x, y };
 
         /**
-         * @type {Object} - object map of tags to arrays of Entites
+         * @type {Object} - Object map of tags (Strings) to arrays of Entites
          */
         this.entities = {};
 
         /**
-         * @type {String[]} - Entity process order by tags
+         * @type {String[]} - Entity process order by tag
          */
         this._entityProcessOrder = [];
     }
