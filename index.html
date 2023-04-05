@@ -11,12 +11,13 @@
         <script type="module" src="js/main.js"></script>
     </head>
     <body>
+        <header id="loading-text" class="loading-text">Loading ... </header>
         <div id="debug" class="box debug-box">
             <span>Avg FPS:</span><div id="average-fps">0</div>
             <span>Draws:</span><div id="draw-count">0</div>
         </div>
-        <div class="box mute-box">
-            <button id="mute-button" class="mute-button" title="mute"></button>
+        <div id="mute-button" class="box mute-box">
+            <div  class="mute-button" title="Mute"></div>
             <div id="mute-button-cross" class="cross hidden"></div>
         </div>
         <div class="game-over-container">

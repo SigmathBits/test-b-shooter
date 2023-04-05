@@ -3,6 +3,8 @@
 }
 
 html, body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -10,9 +12,19 @@ html, body {
     background-color: black;
 }
 
+.loading-text {
+    position: absolute;
+    font-size: 4rem;
+    font-weight: bold;
+    color: white;
+
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
 .box {
     position: absolute;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     user-select: none;
 
     margin: 20px;
@@ -45,16 +57,13 @@ html, body {
     margin: 50px;
 }
 
-.mute-box button {
-    display: block;
-    background: none;
-    border: none;
-}
-
 .mute-box .mute-button {
+    box-sizing: border-box;
+    
     height: var(--mute-button-size);
-    margin-block: 5px;
-    margin-inline: calc(var(--mute-button-size) / 6);
+    padding: 0 calc(var(--mute-button-size) / 10);
+    margin-block: calc(var(--mute-button-size) / 6);
+    margin-inline: calc(var(--mute-button-size) / 3);
 
     border-top: calc(var(--mute-button-size) / 3) solid transparent;
     border-bottom: calc(var(--mute-button-size) / 3) solid transparent;

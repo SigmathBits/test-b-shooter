@@ -68,6 +68,8 @@ class Game {
         if (!DEBUG) {
             document.getElementById('debug').remove();
         }
+
+        document.getElementById('loading-text').remove();
     }
 
     /**
