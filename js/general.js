@@ -51,3 +51,19 @@ export function normalised({ x, y }) {
         y: y / magnitude,
     }
 }
+
+
+/**
+ * Load an image from its URL
+ * @param {String} imageURL 
+ * @returns {Promise<Image>}
+ */
+export async function loadImage(imageURL) {
+    const image = new Image();
+    image.src = imageURL;
+    return new Promise((resolve) => {
+        image.onload = () => {
+            resolve(image);
+        }
+    });
+}

@@ -17,10 +17,9 @@ export class Entity {
      * @param {String} colour
      * @param {World} world
      */
-    constructor({ x, y } = {}, { width, height }, tag='entity', colour="#000000", world=null) {
+    constructor({ x, y } = {}, { width, height }, tag='entity', world=null) {
         this.position = { x, y };
         this.size = { width, height };
-        this.colour = colour;
         this.tag = tag;
         this.world = world;
     }
@@ -121,8 +120,8 @@ export class Entity {
      * @param {CanvasRenderingContext2D} context ds
      */
     render(context) {
-        context.fillStyle = this.colour;
-        context.fillRect(
+        context.strokeStyle = "#FF00FF";
+        context.strokeRect(
             this.position.x, this.position.y, 
             this.size.width, this.size.height,
         );

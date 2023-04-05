@@ -2,7 +2,7 @@
 
 
 import { PLAYER_SPEED, MAX_BULLET_COUNT, BULLET_SIZE } from "./constants.js";
-import { normalised, clamp } from "./general.js";
+import { normalised, clamp, loadImage } from "./general.js";
 
 import { Entity } from "./entity.js";
 import { Bullet } from "./bullet.js";
@@ -11,18 +11,27 @@ import { Explosion } from "./explosion.js";
 
 export class Player extends Entity {
     constructor(position, size) {
-        super(position, size, 'player', "#0000FF");
+        super(position, size, 'player');
 
+        this.sprite = null;
+        
+        this.shotCount = 0;
+        
         this.keyMap = {
             left: false, right: false,
             up: false, down: false,
         };
+        
+        this.muted = false;
+    }
 
-        this.shotCount = 0;
+    async created() {
+        this.sprite = await loadImage('img/ufo.png');
     }
 
     destroyed() {
-        const explosion = new Explosion(this.centre(), { width: 2*this.size.width, height: 2*this.size.height });
+        const explosion = new Explosion(this.centre(), this.muted);
+
         this.world.addEntity(explosion);
     }
 
@@ -108,6 +117,12 @@ export class Player extends Entity {
         const bullet = new Bullet(position, direction);
         this.world.addEntity(bullet);
 
+        if (!this.muted) {
+            const fireSound = new Audio('sfx/328011__astrand__retro-blaster-fire.wav');
+            fireSound.volume = 0.5;
+            fireSound.play();
+        }
+
         this.shotCount++;
     }
 
@@ -125,5 +140,19 @@ export class Player extends Entity {
 
         this.position.x = clamp(this.position.x, 0, this.world.size.width - this.size.width);
         this.position.y = clamp(this.position.y, 0, this.world.size.height - this.size.height);
+
+        this.world.viewport = {
+            x: clamp(this.position.x + this.size.width/2 - window.innerWidth/2, 0, this.world.size.width - window.innerWidth),
+            y: clamp(this.position.y + this.size.height/2 - window.innerHeight/2, 0, this.world.size.height - window.innerHeight),
+        }
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} context
+     */
+    render(context) {
+        if (!this.sprite) return;
+
+        context.drawImage(this.sprite, this.position.x, this.position.y);
     }
 }

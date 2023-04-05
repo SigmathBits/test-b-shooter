@@ -1,10 +1,14 @@
+:root {
+    --mute-button-size: 50px;
+}
+
 html, body {
     width: 100vw;
     height: 100vh;
     margin: 0;
     overflow: hidden;
+    background-color: black;
 }
-
 
 .box {
     position: absolute;
@@ -33,6 +37,53 @@ html, body {
     translate: -50%;
 }
 
+.mute-box {
+    bottom: 0;
+    right: 0;
+
+    border-radius: 10px;
+    margin: 50px;
+}
+
+.mute-box button {
+    display: block;
+    background: none;
+    border: none;
+}
+
+.mute-box .mute-button {
+    height: var(--mute-button-size);
+    margin-block: 5px;
+    margin-inline: calc(var(--mute-button-size) / 6);
+
+    border-top: calc(var(--mute-button-size) / 3) solid transparent;
+    border-bottom: calc(var(--mute-button-size) / 3) solid transparent;
+    border-right: calc(var(--mute-button-size) / 3) solid white;
+}
+
+.mute-box .mute-button::before {
+    display: block;
+    content: '';
+    width: calc(var(--mute-button-size) / 10);
+    height: 100%;
+    background-color: white;
+}
+
+.cross {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: calc(var(--mute-button-size) / 10);
+    height: calc(1.414 * var(--mute-button-size));
+
+    background-color: white;
+    border-radius: 3px;
+
+    translate: -50% -50%;
+    rotate: 45deg;
+}
+
 .game-over-container {
     position: absolute;
     width: 100%;
@@ -40,6 +91,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
 }
 
 .game-over-box {
@@ -74,6 +126,8 @@ html, body {
     color: white;
     border: none;
     border-radius: 2px;
+
+    pointer-events: all;
 }
 
 .restart-button:hover {

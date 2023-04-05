@@ -1,15 +1,12 @@
 'use strict';
 
 
-import { DEBUG, FPS, WORLD_HEIGHT, WORLD_WIDTH, PLAYER_SIZE, ENEMY_COUNT, ENEMY_SIZE } from "./constants.js";
-import { clamp, randomIntegerBetween } from "./general.js";
+import { DEBUG, FPS, UI_FPS, WORLD_HEIGHT, WORLD_WIDTH, PLAYER_SIZE, TARGET_COUNT, TARGET_SIZE, GAME_DURATION_MS } from "./constants.js";
+import { loadImage, randomIntegerBetween } from "./general.js";
 
 import { World } from "./world.js";
 import { Player } from "./player.js";
-import { Enemy } from "./enemy.js";
-
-
-const MS_PER_MINUTE = 60*1_000;
+import { Target } from "./target.js";
 
 
 class Game {
@@ -22,15 +19,21 @@ class Game {
         this.world = new World({ width: WORLD_WIDTH, height: WORLD_HEIGHT });
         this.player = new Player({ x: this.world.size.width / 2, y: this.world.size.height / 2 }, { width: PLAYER_SIZE, height: PLAYER_SIZE });
 
-        this.timeRemainingMS = 0;
+        this.muted = false;
+
+        this.backgroundImage = null;
+
+        this.timeRemainingMS = GAME_DURATION_MS;
         
-        this._lastTimeMS = 0;
+        this._lastFrameTimeMS = 0;
 
         this._DEBUG_FPSData = [];
         this._DEBUG_drawCount = 0;
     }
 
-    run() {
+    async run() {
+        this.backgroundImage = await loadImage('img/space-background.png');
+
         this.renderingContext.canvas.width = window.innerWidth;
         this.renderingContext.canvas.height = window.innerHeight;
         window.addEventListener('resize', () => {
@@ -38,43 +41,63 @@ class Game {
             this.renderingContext.canvas.height = window.innerHeight;
         });
 
+        document.getElementById('mute-button').addEventListener('click', this.muteToggled.bind(this));
+
         // Create Entities
-        for (let i = 0; i < ENEMY_COUNT; i++) {
-            const enemy = new Enemy({
+        for (let i = 0; i < TARGET_COUNT; i++) {
+            const target = new Target({
                     x: randomIntegerBetween(0, this.world.size.width), 
                     y: randomIntegerBetween(0, this.world.size.height),
                 }, 
-                { width: ENEMY_SIZE, height: ENEMY_SIZE },
+                { width: TARGET_SIZE, height: TARGET_SIZE },
             );
-            this.world.addEntity(enemy);
+            this.world.addEntity(target);
         }
 
         this.world.addEntity(this.player);
 
-        this.world.setEntityProcessOrder(['player', 'bullet', 'enemy', 'explosion']);
+        this.world.setEntityProcessOrder(['player', 'bullet', 'target', 'explosion']);
         this.world.setup();
 
         // Start
         requestAnimationFrame(this.update.bind(this));
         this.updateUI();
 
-        setTimeout(this.gameOver.bind(this), MS_PER_MINUTE);
+        setTimeout(this.gameOver.bind(this), GAME_DURATION_MS);
 
         if (!DEBUG) {
             document.getElementById('debug').remove();
         }
     }
 
+    /**
+     * 
+     * @param {MouseEvent} event 
+     */
+    muteToggled(event) {
+        console.debug("Mute clicked!")
+        this.muted = !this.muted;
+
+        document.getElementById('mute-button-cross').classList.toggle('hidden', !this.muted);
+
+        this.player.muted = this.muted;
+        for (const target of this.world.entitiesByTag('target')) {
+            target.muted = this.muted;
+        }
+
+        event.preventDefault();
+    }
+
     gameOver() {
         this.world.destroyEntity(this.player);
 
-        const missedEnemies = this.world.entitiesByTag('enemy').length;
-        const hitEnemies = ENEMY_COUNT - missedEnemies;
+        const missedTargets = this.world.entitiesByTag('target').length;
+        const hitTargets = TARGET_COUNT - missedTargets;
 
         document.getElementById('shot-count').innerHTML = `${this.player.shotCount}`;
-        document.getElementById('accuracy').innerHTML = `${this.player.shotCount ? Math.round(100 * hitEnemies / this.player.shotCount) : 0}%`;
-        document.getElementById('hit-count').innerHTML = `${hitEnemies} (${Math.round(100 * hitEnemies / ENEMY_COUNT)}%)`;
-        document.getElementById('miss-count').innerHTML = `${missedEnemies} (${Math.round(100 * missedEnemies / ENEMY_COUNT)}%)`;
+        document.getElementById('accuracy').innerHTML = `${this.player.shotCount ? Math.round(100 * hitTargets / this.player.shotCount) : 0}%`;
+        document.getElementById('hit-count').innerHTML = `${hitTargets} (${Math.round(100 * hitTargets / TARGET_COUNT)}%)`;
+        document.getElementById('miss-count').innerHTML = `${missedTargets} (${Math.round(100 * missedTargets / TARGET_COUNT)}%)`;
 
         document.getElementById('game-over').classList.remove('hidden');
     }
@@ -86,28 +109,14 @@ class Game {
     update(timeMS) {
         setTimeout(() => { requestAnimationFrame(this.update.bind(this)) }, 1000 / FPS);
 
-        const timeDeltaMS = timeMS - this._lastTimeMS;
-        this.timeRemainingMS = MS_PER_MINUTE - timeMS;
+        const timeDeltaMS = timeMS - this._lastFrameTimeMS;
+        this.timeRemainingMS = GAME_DURATION_MS - timeMS;
 
         this.world.update(timeDeltaMS);
 
-        this.world.viewport = {
-            x: clamp(this.player.position.x + this.player.size.width/2 - window.innerWidth/2, 0, this.world.size.width - window.innerWidth),
-            y: clamp(this.player.position.y + this.player.size.height/2 - window.innerHeight/2, 0, this.world.size.height - window.innerHeight),
-        }
-
         // === Rendering ===
         this.renderingContext.clearRect(0, 0, this.world.size.width, this.world.size.height);
-
-        // DEBUG: background grid
-        if (DEBUG) {
-            for (let x = 0; x < this.world.size.width; x += 50) {
-                for (let y = 0; y < this.world.size.height; y += 50) {
-                    this.renderingContext.fillStyle = "#000000";
-                    this.renderingContext.fillRect(x, y, 5, 5);
-                }
-            }
-        }
+        this.renderingContext.drawImage(this.backgroundImage, 0, 0);
 
         const draws = this.world.render(this.renderingContext);
 
@@ -119,7 +128,7 @@ class Game {
             this._DEBUG_drawCount = draws;
         }
         
-        this._lastTimeMS = timeMS;
+        this._lastFrameTimeMS = timeMS;
     }
 
     updateUI() {
@@ -127,7 +136,11 @@ class Game {
         const minutes = Math.max(Math.floor(rawSeconds / 60), 0)
         const seconds = Math.max(rawSeconds % 60, 0);
 
-        document.getElementById('timer').innerHTML = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        const timerElement = document.getElementById('timer');
+        timerElement.innerHTML = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        if (rawSeconds <= 10) {
+            timerElement.style.color = "red";
+        }
         
         if (DEBUG) {
             const averageFPS = this._DEBUG_FPSData.length ? this._DEBUG_FPSData.reduce((a, b) => a + b) / this._DEBUG_FPSData.length : 0;
@@ -135,15 +148,15 @@ class Game {
             document.getElementById('draw-count').innerText = this._DEBUG_drawCount.toString();
         }
         
-        setTimeout(this.updateUI.bind(this), 250);
+        setTimeout(this.updateUI.bind(this), 1000 / UI_FPS);
     }
 }
 
 
-function main() {
+async function main() {
     const game = new Game();
 
-    game.run();
+    await game.run();
 
     console.log(" === Test B - Shooter Loaded! === ");
 }

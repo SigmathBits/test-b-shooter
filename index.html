@@ -4,7 +4,7 @@
         <title>Shooter</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
-        <meta name="description" content="Shoot as many enemies as you can!">
+        <meta name="description" content="Shoot as many asteroids as you can!">
         
         <link rel="stylesheet" href="css/main.css"></link>
 
@@ -14,6 +14,10 @@
         <div id="debug" class="box debug-box">
             <span>Avg FPS:</span><div id="average-fps">0</div>
             <span>Draws:</span><div id="draw-count">0</div>
+        </div>
+        <div class="box mute-box">
+            <button id="mute-button" class="mute-button" title="mute"></button>
+            <div id="mute-button-cross" class="cross hidden"></div>
         </div>
         <div class="game-over-container">
             <div id="game-over" class="box game-over-box hidden">

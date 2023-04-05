@@ -15,13 +15,9 @@ export class Bullet extends Entity {
      * @param {Number} directionVector.y
      */
     constructor(position, { x, y }) {
-        super(position, { width: BULLET_SIZE, height: BULLET_SIZE }, 'bullet', "#000000");
+        super(position, { width: BULLET_SIZE, height: BULLET_SIZE }, 'bullet');
         
         this.direction = { x, y };
-    }
-
-    destroyed() {
-        
     }
 
     update(timeDeltaMS) {
@@ -31,14 +27,14 @@ export class Bullet extends Entity {
            return;
        }
 
-       for (const enemy of this.world.entitiesByTag('enemy')) {
-           if (Math.abs(this.x - enemy.x) > 2*BULLET_SPEED || Math.abs(this.y - enemy.y) > 2*BULLET_SPEED) {
+       for (const target of this.world.entitiesByTag('target')) {
+           if (Math.abs(this.x - target.x) > 2*BULLET_SPEED || Math.abs(this.y - target.y) > 2*BULLET_SPEED) {
                break;
            }
 
-           if (this.intersects(enemy.rect())) {
+           if (this.intersects(target.rect())) {
                this.destroy();
-               this.world.destroyEntity(enemy);
+               this.world.destroyEntity(target);
                break;
            }
        }
@@ -54,7 +50,7 @@ export class Bullet extends Entity {
     render(context) {
         const centre = this.centre();
         
-        context.fillStyle = "#000000";
+        context.fillStyle = "#22FF33";
         context.beginPath();
         context.arc(centre.x, centre.y, this.size.width/2, 0, 2 * Math.PI);
         context.fill();

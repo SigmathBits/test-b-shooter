@@ -158,6 +158,8 @@ export class World {
      * @returns {Number} The number of draws
      */
     render(context) {
+        context.setTransform(1, 0, 0, 1, -this.viewport.x, -this.viewport.y);
+        
         var draws = 0;
         for (const entity of this.allEntities().reverse()) {
             // Only render what is on screen
@@ -167,8 +169,6 @@ export class World {
                 draws++;
             }
         }
-
-        context.setTransform(1, 0, 0, 1, -this.viewport.x, -this.viewport.y);
 
         return draws;
     }
